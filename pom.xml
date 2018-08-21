@@ -5,29 +5,29 @@
     <artifactId>testify-demo</artifactId>
     <version>1.0.3-SNAPSHOT</version>
     <packaging>pom</packaging>
-    
+
     <name>Testify Demo</name>
     <description>>A demonstration of Testify's capabilities.</description>
-    
+
     <modules>
         <module>greetings</module>
     </modules>
-    
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        
+
         <netbeans.compile.on.save>none</netbeans.compile.on.save>
         <netbeans.hint.license>apache20</netbeans.hint.license>
         <netbeans.inceptionYear>2016</netbeans.inceptionYear>
-        
+
         <!-- Plugin Dependencies -->
         <plugin.surefire>2.20.1</plugin.surefire>
         <plugin.failsafe>2.20.1</plugin.failsafe>
         <plugin.jacoco>0.7.9</plugin.jacoco>
         <plugin.dependency>3.0.2</plugin.dependency>
-        
+
         <!-- Test Dependencies -->
         <testify.version>1.0.2</testify.version>
         <localresources.version>1.0.2</localresources.version>
@@ -37,7 +37,7 @@
         <assertj.version>3.8.0</assertj.version>
         <lombok.version>1.16.18</lombok.version>
     </properties>
-    
+
     <build>
         <plugins>
             <plugin>
@@ -160,7 +160,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            
+
             <!-- Test Deps -->
             <dependency>
                 <groupId>junit</groupId>
@@ -182,14 +182,14 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    
+
     <dependencies>
         <!-- Testify Test Deps -->
         <dependency>
             <groupId>org.testifyproject</groupId>
             <artifactId>core</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.testifyproject.junit4</groupId>
             <artifactId>junit4-core</artifactId>

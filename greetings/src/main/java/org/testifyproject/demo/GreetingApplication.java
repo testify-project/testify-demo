@@ -15,29 +15,16 @@
  */
 package org.testifyproject.demo;
 
-import static org.hibernate.cfg.AvailableSettings.DATASOURCE;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.sql.DataSource;
-
-import org.modelmapper.ModelMapper;
-import org.modelmapper.config.Configuration;
-import org.modelmapper.convention.MatchingStrategies;
-import org.modelmapper.convention.NamingConventions;
-import org.postgresql.ds.PGSimpleDataSource;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
-import org.springframework.context.annotation.Bean;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.context.annotation.Import;
 
 /**
  * Greeting Spring Boot Application.
  *
  * @author saden
  */
+@Import(GreetingModule.class)
 @SpringBootApplication
 public class GreetingApplication {
 
@@ -51,42 +38,4 @@ public class GreetingApplication {
         SpringApplication.run(GreetingApplication.class, args);
     }
 
-    @Bean
-    DataSource productionDataSource() {
-        PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setServerName("production.acme.com");
-        dataSource.setPortNumber(5432);
-        dataSource.setDatabaseName("postgres");
-        dataSource.setUser("postgres");
-        dataSource.setPassword("mysecretpassword");
-
-        return dataSource;
-    }
-
-    @Bean
-    LocalContainerEntityManagerFactoryBean entityManagerFactory(
-            EntityManagerFactoryBuilder builder, DataSource dataSource) {
-        Map<String, Object> properties = new HashMap<>();
-        properties.put(DATASOURCE, dataSource);
-
-        return builder.dataSource(dataSource)
-                .persistenceUnit("org.testifyproject.demo.greetings")
-                .properties(properties)
-                .build();
-    }
-
-    @Bean
-    ModelMapper modelMapper() {
-        ModelMapper mapper = new ModelMapper();
-
-        Configuration configuration = mapper.getConfiguration();
-        configuration.setMatchingStrategy(MatchingStrategies.STRICT);
-        configuration.setFieldAccessLevel(Configuration.AccessLevel.PUBLIC);
-        configuration.setMethodAccessLevel(Configuration.AccessLevel.PUBLIC);
-        configuration.setAmbiguityIgnored(false);
-        configuration.setDestinationNamingConvention(NamingConventions.JAVABEANS_MUTATOR);
-        configuration.setSourceNamingConvention(NamingConventions.JAVABEANS_ACCESSOR);
-
-        return mapper;
-    }
 }

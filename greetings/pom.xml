@@ -7,31 +7,31 @@
         <version>1.0.3-SNAPSHOT</version>
     </parent>
     <artifactId>greetings</artifactId>
-    
+
     <name>Greetings</name>
     <description>A simple SpringBoot application that showcases Testify</description>
-    
+
     <properties>
         <!-- Global Properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        
+
         <!-- Plugin Dependencies -->
         <plugin.war.version>2.6</plugin.war.version>
         <plugin.compiler.version>3.5.1</plugin.compiler.version>
         <plugin.surefire>2.20</plugin.surefire>
         <plugin.jacoco>0.7.7.201606060606</plugin.jacoco>
         <plugin.dependency>3.0.2</plugin.dependency>
-        
+
         <!-- Application Dependencies -->
-        <springboot.version>1.5.9.RELEASE</springboot.version>
+        <springboot.version>1.5.7.RELEASE</springboot.version>
         <javax.inject.version>1</javax.inject.version>
         <snakeyaml.version>1.17</snakeyaml.version>
         <modelmapper.version>0.7.7</modelmapper.version>
         <jackson.version>2.9.2</jackson.version>
         <jsoup.version>1.9.2</jsoup.version>
-        
+
         <!-- Database Dependencies -->
         <javax.el.version>3.0.0</javax.el.version>
         <hibernate.version>5.1.0.Final</hibernate.version>
@@ -41,7 +41,7 @@
         <javax.interceptor.version>1.2</javax.interceptor.version>
         <postgressql.version>9.4.1207</postgressql.version>
     </properties>
-    
+
     <build>
         <plugins>
             <plugin>
@@ -49,7 +49,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${springboot.version}</version>
             </plugin>
-        </plugins>    
+        </plugins>
     </build>
 
     <dependencyManagement>
@@ -70,7 +70,7 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    
+
     <dependencies>
         <!-- Testify Deps -->
         <dependency>
@@ -94,13 +94,13 @@
             <artifactId>test-logger</artifactId>
             <scope>test</scope>
         </dependency>
-        
+
         <!-- Testify Test Deps -->
         <dependency>
             <groupId>org.testifyproject</groupId>
             <artifactId>core</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.testifyproject.junit4</groupId>
             <artifactId>junit4-core</artifactId>
@@ -176,5 +176,5 @@
             <artifactId>modelmapper</artifactId>
             <version>${modelmapper.version}</version>
         </dependency>
-    </dependencies>   
+    </dependencies>
 </project>

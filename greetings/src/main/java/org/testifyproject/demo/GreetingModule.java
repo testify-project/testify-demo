@@ -13,46 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.fixture;
+package org.testifyproject.demo;
 
 import static org.hibernate.cfg.AvailableSettings.DATASOURCE;
+import static org.modelmapper.config.Configuration.AccessLevel.PUBLIC;
 
-import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
+import org.modelmapper.convention.NamingConventions;
 import org.postgresql.ds.PGSimpleDataSource;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
- * Test fixture module that defines the datasource of a postgreSQL running inside of a container.
+ * Greeting Spring Java Config class..
  *
  * @author saden
  */
+@ComponentScan
 @Configuration
-public class TestModule {
+@EnableJpaRepositories
+@EnableTransactionManagement
+public class GreetingModule {
 
-    /**
-     * Create a datasource that takes precedence (@Primary) over the production datasource that
-     * points to the postgres in the container resource.
-     *
-     * @param inetAddress the container address.
-     * @return the test data source
-     */
-    @Primary
     @Bean
-    DataSource testDataSource(
-        @Qualifier("resource:/postgres:9.4/resource") InetAddress inetAddress) {
+    DataSource productionDataSource() {
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setServerName(inetAddress.getHostAddress());
+        dataSource.setServerName("production.acme.com");
         dataSource.setPortNumber(5432);
-
-        //Default postgres image database name, user and postword
         dataSource.setDatabaseName("postgres");
         dataSource.setUser("postgres");
         dataSource.setPassword("mysecretpassword");
@@ -60,29 +55,31 @@ public class TestModule {
         return dataSource;
     }
 
-    /**
-     * Create and configure a test entity manager bean factory.
-     *
-     * @param builder the entity manager builder
-     * @param dataSource the test data source
-     * @param applicationContext the application context
-     * @return an entity manager bean factory
-     */
-    @Primary
     @Bean
-    LocalContainerEntityManagerFactoryBean testEntityManagerFactory(
-        DataSource dataSource,
-        ApplicationContext applicationContext) {
+    LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
         Map<String, Object> properties = new HashMap<>();
         properties.put(DATASOURCE, dataSource);
-        properties.put("hibernate.ejb.entitymanager_factory_name", applicationContext.getId());
 
         LocalContainerEntityManagerFactoryBean bean = new LocalContainerEntityManagerFactoryBean();
         bean.setDataSource(dataSource);
-        bean.setPersistenceUnitName("test.example.greeter");
+        bean.setPersistenceUnitName("example.greetings");
         bean.setJpaPropertyMap(properties);
 
         return bean;
     }
 
+    @Bean
+    ModelMapper modelMapper() {
+        ModelMapper mapper = new ModelMapper();
+
+        org.modelmapper.config.Configuration configuration = mapper.getConfiguration();
+        configuration.setMatchingStrategy(MatchingStrategies.STRICT);
+        configuration.setFieldAccessLevel(PUBLIC);
+        configuration.setMethodAccessLevel(PUBLIC);
+        configuration.setAmbiguityIgnored(false);
+        configuration.setDestinationNamingConvention(NamingConventions.JAVABEANS_MUTATOR);
+        configuration.setSourceNamingConvention(NamingConventions.JAVABEANS_ACCESSOR);
+
+        return mapper;
+    }
 }
