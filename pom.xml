@@ -6,7 +6,7 @@
     <version>1.0.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>Testify Demo</name>
+    <name>[Testify Demo]</name>
     <description>>A demonstration of Testify's capabilities.</description>
 
     <modules>
