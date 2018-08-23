@@ -16,6 +16,8 @@
 spring:
     application:
         name: Greeting
+    datasource:
+        initialize: false
 server:
     port: 9000
 
