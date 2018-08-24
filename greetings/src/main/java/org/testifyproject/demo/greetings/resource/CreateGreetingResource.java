@@ -17,10 +17,7 @@ package org.testifyproject.demo.greetings.resource;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
-import java.util.UUID;
-
 import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
@@ -50,19 +47,19 @@ public class CreateGreetingResource {
     }
 
     @RequestMapping(
-            path = "/greetings",
-            method = RequestMethod.POST,
-            consumes = {
-                MediaType.APPLICATION_JSON_VALUE,
-                MediaType.APPLICATION_FORM_URLENCODED_VALUE
-            })
+        path = "/greetings",
+        method = RequestMethod.POST,
+        consumes = {
+            MediaType.APPLICATION_JSON_VALUE,
+            MediaType.APPLICATION_FORM_URLENCODED_VALUE
+        })
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity createGreeting(@Valid @RequestBody GreetingRequest request) {
-        UUID id = greetingService.createGeeting(request);
+        String id = greetingService.createGeeting(request);
 
         ControllerLinkBuilder link = linkTo(CreateGreetingResource.class)
-                .slash("greetings")
-                .slash(id);
+            .slash("greetings")
+            .slash(id);
 
         return ResponseEntity.created(link.toUri()).build();
     }

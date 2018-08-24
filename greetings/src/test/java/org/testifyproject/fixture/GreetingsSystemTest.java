@@ -17,7 +17,7 @@ import org.testifyproject.demo.GreetingApplication;
 @Application(GreetingApplication.class)
 @Module(value = TestModule.class, test = true)
 @ConfigHandler(TestConfigHandler.class)
-@VirtualResource(value = "postgres", version = "9.4")
+@VirtualResource(value = "elasticsearch", version = "2.4.6")
 @Retention(RUNTIME)
 @Target(TYPE)
 public @interface GreetingsSystemTest {

@@ -15,9 +15,8 @@
  */
 package org.testifyproject.demo.greetings;
 
-import java.util.UUID;
-
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
+import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -26,6 +25,8 @@ import org.springframework.stereotype.Repository;
  * @author saden
  */
 @Repository
-public interface GreetingRepository extends JpaRepository<GreetingEntity, UUID> {
+public interface GreetingRepository extends ElasticsearchRepository<GreetingDocument, String> {
+
+    List<GreetingDocument> findByPhrase(String phrase);
 
 }

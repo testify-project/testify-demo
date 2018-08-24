@@ -13,7 +13,7 @@ import org.testifyproject.junit4.IntegrationTest;
 
 @Module(GreetingModule.class)
 @Module(value = TestModule.class, test = true)
-@VirtualResource(value = "postgres", version = "9.4")
+@VirtualResource(value = "elasticsearch", version = "2.4.6")
 @RunWith(IntegrationTest.class)
 public class GreetingRepositoryIT {
 
@@ -24,10 +24,10 @@ public class GreetingRepositoryIT {
     public void givenGreetingEntitySaveShouldSaveGreetingToTheDatabase() {
         //Arrange
         String phrase = "caio";
-        GreetingEntity entity = new GreetingEntity(phrase);
+        GreetingDocument entity = new GreetingDocument(phrase);
 
         //Act
-        GreetingEntity result = sut.save(entity);
+        GreetingDocument result = sut.save(entity);
 
         //Assert
         assertThat(result).isNotNull();

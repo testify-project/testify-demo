@@ -16,60 +16,40 @@
 package org.testifyproject.demo.greetings;
 
 import java.io.Serializable;
-import java.util.UUID;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.validator.constraints.SafeHtml;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 /**
  * A greeting entity.
  *
  * @author saden
  */
-@Entity
-@Table(name = "Greetings")
+@Document(indexName = "greeting", type = "greeting")
 @ToString
 @EqualsAndHashCode
-public class GreetingEntity implements Serializable {
+public class GreetingDocument implements Serializable {
 
-    private UUID id;
+    private String id;
     private String phrase;
 
-    public GreetingEntity() {
+    public GreetingDocument() {
     }
 
-    public GreetingEntity(String phrase) {
+    public GreetingDocument(String phrase) {
         this.phrase = phrase;
     }
 
     @Id
-    @GeneratedValue(generator = "greetingIdGenerator")
-    @GenericGenerator(name = "greetingIdGenerator", strategy = "uuid2")
-    @Column(name = "greeting_id", updatable = false, insertable = false)
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
-    @JsonProperty
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    @SafeHtml
-    @NotNull
-    @Column
     public String getPhrase() {
         return phrase;
     }

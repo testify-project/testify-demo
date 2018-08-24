@@ -1,53 +1,38 @@
 package org.testifyproject.fixture;
 
-import static org.hibernate.cfg.AvailableSettings.DATASOURCE;
-
 import java.net.InetAddress;
-import java.util.HashMap;
-import java.util.Map;
-import javax.sql.DataSource;
-import org.postgresql.ds.PGSimpleDataSource;
+import org.elasticsearch.action.index.IndexRequestBuilder;
+import org.elasticsearch.client.Client;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 @Configuration
 public class TestModule {
 
     @Primary
     @Bean
-    DataSource testDataSource(
-        @Qualifier("resource:/postgres:9.4/resource") InetAddress inetAddress) {
-        PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setServerName(inetAddress.getHostAddress());
-        dataSource.setPortNumber(5432);
+    public Client testClient(
+        @Qualifier("resource:/elasticsearch:2.4.6/resource") InetAddress inetAddress) {
+        Settings settings = Settings.builder()
+            .put("cluster.name", "elasticsearch").build();
 
-        //Default postgres image database name, user and postword
-        dataSource.setDatabaseName("postgres");
-        dataSource.setUser("postgres");
-        dataSource.setPassword("mysecretpassword");
+        TransportClient client
+            = TransportClient.builder()
+                .settings(settings)
+                .build()
+                .addTransportAddress(new InetSocketTransportAddress(inetAddress, 9300));
 
-        return dataSource;
-    }
+        IndexRequestBuilder indexRequestBuilder = client.prepareIndex("greeting", "greeting")
+            .setSource("{\"id\":\"0d216415-1b8e-4ab9-8531-fcbd25d5966f\", \"phrase\":\"hello\"}");
 
-    @Primary
-    @Bean
-    LocalContainerEntityManagerFactoryBean testEntityManagerFactory(
-        DataSource dataSource,
-        ApplicationContext applicationContext) {
-        Map<String, Object> properties = new HashMap<>();
-        properties.put(DATASOURCE, dataSource);
-        properties.put("hibernate.ejb.entitymanager_factory_name", applicationContext.getId());
+        indexRequestBuilder.get();
 
-        LocalContainerEntityManagerFactoryBean bean = new LocalContainerEntityManagerFactoryBean();
-        bean.setDataSource(dataSource);
-        bean.setPersistenceUnitName("test.example.greeter");
-        bean.setJpaPropertyMap(properties);
-
-        return bean;
+        return client;
     }
 
 }

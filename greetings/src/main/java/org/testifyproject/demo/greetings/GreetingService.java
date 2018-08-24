@@ -15,10 +15,8 @@
  */
 package org.testifyproject.demo.greetings;
 
-import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,33 +40,33 @@ public class GreetingService {
         this.modelMapper = modelMapper;
     }
 
-    public UUID createGeeting(GreetingRequest request) {
-        GreetingEntity entity = modelMapper.map(request, GreetingEntity.class);
-        entity = greetingRepository.save(entity);
+    public String createGeeting(GreetingRequest request) {
+        GreetingDocument document = modelMapper.map(request, GreetingDocument.class);
+        document = greetingRepository.save(document);
 
-        return entity.getId();
+        return document.getId();
     }
 
-    public GreetingResponse getGreeting(UUID id) {
-        GreetingEntity result = greetingRepository.findOne(id);
+    public GreetingResponse getGreeting(String id) {
+        GreetingDocument document = greetingRepository.findOne(id);
 
-        return modelMapper.map(result, GreetingResponse.class);
+        return modelMapper.map(document, GreetingResponse.class);
     }
 
     public Iterable<GreetingResponse> listGreetings() {
         return StreamSupport.stream(greetingRepository.findAll().spliterator(), false)
-                .map(p -> modelMapper.map(p, GreetingResponse.class))
-                .collect(Collectors.toList());
+            .map(p -> modelMapper.map(p, GreetingResponse.class))
+            .collect(Collectors.toList());
     }
 
-    public void deleteGreeting(UUID id) {
+    public void deleteGreeting(String id) {
         greetingRepository.delete(id);
     }
 
-    public void updateGreeting(UUID id, GreetingRequest request) {
-        GreetingEntity entity = greetingRepository.getOne(id);
+    public void updateGreeting(String id, GreetingRequest request) {
+        GreetingDocument entity = greetingRepository.findOne(id);
         modelMapper.map(request, entity);
 
-        GreetingEntity result = greetingRepository.save(entity);
+        greetingRepository.save(entity);
     }
 }

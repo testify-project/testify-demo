@@ -15,8 +15,6 @@
  */
 package org.testifyproject.demo.greetings;
 
-import java.util.UUID;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -29,7 +27,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GreetingResponse {
 
-    private UUID id;
+    private String id;
     private String phrase;
 
 }

@@ -15,10 +15,7 @@
  */
 package org.testifyproject.demo.greetings.resource;
 
-import java.util.UUID;
-
 import javax.validation.constraints.NotNull;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,12 +41,11 @@ public class RemoveGreetingResource {
         this.greetingService = greetingService;
     }
 
-
     @RequestMapping(
-            path = "/greetings/{id}",
-            method = RequestMethod.DELETE)
+        path = "/greetings/{id}",
+        method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity removeGreeting(@NotNull @PathVariable("id") UUID id) {
+    public ResponseEntity removeGreeting(@NotNull @PathVariable("id") String id) {
         greetingService.deleteGreeting(id);
 
         return ResponseEntity.noContent().build();

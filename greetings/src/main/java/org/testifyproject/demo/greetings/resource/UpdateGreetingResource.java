@@ -15,11 +15,8 @@
  */
 package org.testifyproject.demo.greetings.resource;
 
-import java.util.UUID;
-
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -49,14 +46,14 @@ public class UpdateGreetingResource {
     }
 
     @RequestMapping(
-            path = "/greetings/{id}",
-            method = RequestMethod.PUT,
-            consumes = {
-                MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_FORM_URLENCODED_VALUE
-            })
+        path = "/greetings/{id}",
+        method = RequestMethod.PUT,
+        consumes = {
+            MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_FORM_URLENCODED_VALUE
+        })
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity updateGreeting(@NotNull @PathVariable("id") UUID id,
-            @Valid @RequestBody GreetingRequest request) {
+    public ResponseEntity updateGreeting(@NotNull @PathVariable("id") String id,
+        @Valid @RequestBody GreetingRequest request) {
 
         greetingService.updateGreeting(id, request);
 

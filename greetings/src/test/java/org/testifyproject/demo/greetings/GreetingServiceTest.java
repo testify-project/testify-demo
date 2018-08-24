@@ -5,7 +5,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import java.util.UUID;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.modelmapper.ModelMapper;
@@ -29,9 +28,9 @@ public class GreetingServiceTest {
     public void givenGreetingRequestCreateGreetingShouldSaveGreeting() {
         //Arrange
         GreetingRequest request = mock(GreetingRequest.class);
-        Class<GreetingEntity> entityType = GreetingEntity.class;
-        GreetingEntity entity = mock(entityType);
-        UUID id = UUID.fromString("0d216415-1b8e-4ab9-8531-fcbd25d5966f");
+        Class<GreetingDocument> entityType = GreetingDocument.class;
+        GreetingDocument entity = mock(entityType);
+        String id = "0d216415-1b8e-4ab9-8531-fcbd25d5966f";
 
         given(modelMapper.map(request, entityType))
             .willReturn(entity);
@@ -42,7 +41,7 @@ public class GreetingServiceTest {
         given(entity.getId()).willReturn(id);
 
         //Act
-        UUID result = sut.createGeeting(request);
+        String result = sut.createGeeting(request);
 
         //Assert
         assertThat(result).isEqualTo(id);

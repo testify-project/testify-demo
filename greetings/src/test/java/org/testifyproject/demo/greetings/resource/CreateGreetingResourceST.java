@@ -18,13 +18,13 @@ import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.demo.GreetingApplication;
-import org.testifyproject.demo.greetings.GreetingEntity;
+import org.testifyproject.demo.greetings.GreetingDocument;
 import org.testifyproject.fixture.TestModule;
 import org.testifyproject.junit4.SystemTest;
 
 @Application(GreetingApplication.class)
 @Module(value = TestModule.class, test = true)
-@VirtualResource(value = "postgres", version = "9.4")
+@VirtualResource(value = "elasticsearch", version = "2.4.6")
 @RunWith(SystemTest.class)
 public class CreateGreetingResourceST {
 
@@ -39,7 +39,7 @@ public class CreateGreetingResourceST {
     @Test
     public void givenGreetingRequestPostGreetingShouldCreateGreeting() {
         //Arrange
-        GreetingEntity entity = new GreetingEntity("caio");
+        GreetingDocument entity = new GreetingDocument("caio");
 
         //Act
         Response response = sut.getClient().getValue()

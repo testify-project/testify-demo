@@ -15,29 +15,27 @@
  */
 package org.testifyproject.demo;
 
-import static org.hibernate.cfg.AvailableSettings.DATASOURCE;
 import static org.modelmapper.config.Configuration.AccessLevel.PUBLIC;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
-
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import org.elasticsearch.client.Client;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.modelmapper.convention.NamingConventions;
-import org.postgresql.ds.PGSimpleDataSource;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchDataAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchRepositoriesAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
 /**
  * Greeting Spring Java Config class..
@@ -45,45 +43,31 @@ import org.springframework.transaction.PlatformTransactionManager;
  * @author saden
  */
 @EnableAutoConfiguration(exclude = {
-    DataSourceAutoConfiguration.class,
-    HibernateJpaAutoConfiguration.class,
-    DataSourceTransactionManagerAutoConfiguration.class})
+    ElasticsearchAutoConfiguration.class,
+    ElasticsearchDataAutoConfiguration.class,
+    ElasticsearchRepositoriesAutoConfiguration.class})
 @Configuration
+@EnableElasticsearchRepositories("org.testifyproject.demo")
 @ComponentScan("org.testifyproject.demo")
 public class GreetingModule {
 
     @Bean
-    DataSource dataSource() {
-        PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setServerName("production.acme.com");
-        dataSource.setPortNumber(5432);
-        dataSource.setDatabaseName("postgres");
-        dataSource.setUser("postgres");
-        dataSource.setPassword("mysecretpassword");
+    public Client client() throws UnknownHostException {
+        Settings settings = Settings.builder()
+            .put("client.transport.sniff", true)
+            .put("cluster.name", "productionElasticsearch").build();
 
-        return dataSource;
+        InetAddress address = InetAddress.getByName("production.host");
+
+        return TransportClient.builder()
+            .settings(settings)
+            .build()
+            .addTransportAddress(new InetSocketTransportAddress(address, 9300));
     }
 
     @Bean
-    LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
-        Map<String, Object> properties = new HashMap<>();
-        properties.put(DATASOURCE, dataSource);
-
-        LocalContainerEntityManagerFactoryBean bean =
-                new LocalContainerEntityManagerFactoryBean();
-        bean.setDataSource(dataSource);
-        bean.setPersistenceUnitName("example.greetings");
-        bean.setJpaPropertyMap(properties);
-
-        return bean;
-    }
-
-    @Bean
-    PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
-        JpaTransactionManager transactionManager =
-                new JpaTransactionManager(entityManagerFactory);
-
-        return transactionManager;
+    public ElasticsearchOperations elasticsearchTemplate(Client client) {
+        return new ElasticsearchTemplate(client);
     }
 
     @Bean
