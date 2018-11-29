@@ -14,7 +14,7 @@ import org.testifyproject.core.util.FileSystemUtil;
 import org.testifyproject.trait.PropertiesReader;
 
 public class ElasticsearchLocalResource implements
-    LocalResourceProvider<Settings.Builder, Node, Client> {
+        LocalResourceProvider<Settings.Builder, Node, Client> {
 
     private final FileSystemUtil fileSystemUtil = FileSystemUtil.INSTANCE;
 
@@ -23,48 +23,48 @@ public class ElasticsearchLocalResource implements
 
     @Override
     public Settings.Builder configure(TestContext testContext, LocalResource localResource,
-        PropertiesReader configReader) {
+            PropertiesReader configReader) {
         String testName = testContext.getName();
         String pathHome = fileSystemUtil.createPath("target", "elasticsearch", testName);
 
         return Settings.builder()
-            .put("node.name", testContext.getName())
-            .put("path.home", pathHome);
+                .put("node.name", testContext.getName())
+                .put("path.home", pathHome);
     }
 
     @Override
     public LocalResourceInstance<Node, Client> start(TestContext testContext,
-        LocalResource localResource,
-        Settings.Builder config) throws Exception {
+            LocalResource localResource,
+            Settings.Builder config) throws Exception {
         String pathHome = config.get("path.home");
         fileSystemUtil.recreateDirectory(pathHome);
 
         node = NodeBuilder.nodeBuilder()
-            .settings(config)
-            .clusterName(testContext.getName())
-            .data(true)
-            .local(true)
-            .node();
+                .settings(config)
+                .clusterName(testContext.getName())
+                .data(true)
+                .local(true)
+                .node();
 
         node.start();
         client = node.client();
 
         //Load Test Data
         IndexRequestBuilder indexRequestBuilder = client.prepareIndex("greeting", "greeting")
-            .setSource("{\"id\":\"0d216415-1b8e-4ab9-8531-fcbd25d5966f\", \"phrase\":\"hello\"}");
+                .setSource("{\"id\":\"0d216415-1b8e-4ab9-8531-fcbd25d5966f\", \"phrase\":\"hello\"}");
 
         indexRequestBuilder.get();
 
         return LocalResourceInstanceBuilder.builder()
-            .resource(node)
-            .client(client, Client.class)
-            .build("elasticsearch2", localResource);
+                .resource(node)
+                .client(client, Client.class)
+                .build("elasticsearch2", localResource);
     }
 
     @Override
     public void stop(TestContext testContext, LocalResource localResource,
-        LocalResourceInstance<Node, Client> instance)
-        throws Exception {
+            LocalResourceInstance<Node, Client> instance)
+            throws Exception {
         client.close();
         node.close();
     }

@@ -15,22 +15,23 @@ import org.springframework.context.annotation.Primary;
 public class TestModule {
 
     @Primary
-    @Bean
+    @Bean(destroyMethod = "close")
     public Client testClient(
-        @Qualifier("resource:/elasticsearch:2.4.6/resource") InetAddress inetAddress) {
+            @Qualifier("resource:/elasticsearch:2.4.6/resource") InetAddress inetAddress)
+            throws Exception {
         Settings settings = Settings.builder()
-            .put("cluster.name", "elasticsearch").build();
+                .put("cluster.name", "elasticsearch").build();
 
         TransportClient client
-            = TransportClient.builder()
-                .settings(settings)
-                .build()
-                .addTransportAddress(new InetSocketTransportAddress(inetAddress, 9300));
+                = TransportClient.builder()
+                        .settings(settings)
+                        .build()
+                        .addTransportAddress(new InetSocketTransportAddress(inetAddress, 9300));
 
-        IndexRequestBuilder indexRequestBuilder = client.prepareIndex("greeting", "greeting")
-            .setSource("{\"id\":\"0d216415-1b8e-4ab9-8531-fcbd25d5966f\", \"phrase\":\"hello\"}");
+        IndexRequestBuilder indexRequestBuilder = client.prepareIndex("greeting", "greeting", "1")
+                .setSource("{\"phrase\":\"hello\"}");
 
-        indexRequestBuilder.get();
+        indexRequestBuilder.execute().get();
 
         return client;
     }

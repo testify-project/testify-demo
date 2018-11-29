@@ -16,8 +16,10 @@
 package org.testifyproject.demo;
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 /**
  * Greeting Spring Boot Application.
@@ -25,10 +27,12 @@ import org.springframework.context.annotation.Import;
  * @author saden
  */
 @Configuration
-@Import({GreetingModule.class})
+@ComponentScan
 public class GreetingApplication {
 
     public static void main(String[] args) throws Exception {
+        ConfigurableApplicationContext ctx = new SpringApplicationBuilder(GreetingApplication.class).web(false)
+                .run();
         GreetingApplication application = new GreetingApplication();
 
         application.run(args);

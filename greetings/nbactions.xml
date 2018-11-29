@@ -1,14 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <actions>
-        <action>
-            <actionName>CUSTOM-clean install -skipTests</actionName>
-            <displayName>clean install -skipTests</displayName>
-            <goals>
-                <goal>clean</goal>
-                <goal>install</goal>
-            </goals>
-            <properties>
-                <skipTests>true</skipTests>
-            </properties>
-        </action>
-    </actions>
+    <action>
+        <actionName>CUSTOM-clean install -skipTests</actionName>
+        <displayName>clean install -skipTests</displayName>
+        <goals>
+            <goal>clean</goal>
+            <goal>install</goal>
+        </goals>
+        <properties>
+            <skipTests>true</skipTests>
+        </properties>
+    </action>
+    <action>
+        <actionName>CUSTOM-clean install -Pinteg</actionName>
+        <displayName>clean install -Pinteg</displayName>
+        <goals>
+            <goal>clean</goal>
+            <goal>install</goal>
+        </goals>
+        <activatedProfiles>
+            <activatedProfile>integ</activatedProfile>
+        </activatedProfiles>
+    </action>
+    <action>
+        <actionName>CUSTOM-clean install -Psystem</actionName>
+        <displayName>clean install -Psystem</displayName>
+        <goals>
+            <goal>clean</goal>
+            <goal>install</goal>
+        </goals>
+        <activatedProfiles>
+            <activatedProfile>system</activatedProfile>
+        </activatedProfiles>
+    </action>
+    <action>
+        <actionName>CUSTOM-clean install -Ptest</actionName>
+        <displayName>clean install -Ptest</displayName>
+        <goals>
+            <goal>clean</goal>
+            <goal>install</goal>
+        </goals>
+        <activatedProfiles>
+            <activatedProfile>test</activatedProfile>
+        </activatedProfiles>
+    </action>
+</actions>

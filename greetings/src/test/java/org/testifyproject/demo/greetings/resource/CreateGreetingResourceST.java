@@ -1,13 +1,12 @@
 package org.testifyproject.demo.greetings.resource;
 
-import static javax.ws.rs.core.Response.Status.CREATED;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
+import static javax.ws.rs.core.Response.Status.CREATED;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +17,7 @@ import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.demo.GreetingApplication;
-import org.testifyproject.demo.greetings.GreetingDocument;
+import org.testifyproject.demo.greetings.GreetingRequest;
 import org.testifyproject.fixture.TestModule;
 import org.testifyproject.junit4.SystemTest;
 
@@ -39,13 +38,13 @@ public class CreateGreetingResourceST {
     @Test
     public void givenGreetingRequestPostGreetingShouldCreateGreeting() {
         //Arrange
-        GreetingDocument entity = new GreetingDocument("caio");
+        GreetingRequest request = new GreetingRequest("caio");
 
         //Act
         Response response = sut.getClient().getValue()
-            .path("greetings")
-            .request()
-            .post(Entity.json(entity));
+                .path("greetings")
+                .request()
+                .post(Entity.json(request));
 
         //Assert
         assertThat(response.getStatus()).isEqualTo(CREATED.getStatusCode());

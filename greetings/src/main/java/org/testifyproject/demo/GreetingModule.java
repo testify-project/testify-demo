@@ -15,8 +15,6 @@
  */
 package org.testifyproject.demo;
 
-import static org.modelmapper.config.Configuration.AccessLevel.PUBLIC;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import org.elasticsearch.client.Client;
@@ -24,6 +22,7 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.modelmapper.ModelMapper;
+import static org.modelmapper.config.Configuration.AccessLevel.PUBLIC;
 import org.modelmapper.convention.MatchingStrategies;
 import org.modelmapper.convention.NamingConventions;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -54,15 +53,15 @@ public class GreetingModule {
     @Bean
     public Client client() throws UnknownHostException {
         Settings settings = Settings.builder()
-            .put("client.transport.sniff", true)
-            .put("cluster.name", "productionElasticsearch").build();
+                .put("client.transport.sniff", true)
+                .put("cluster.name", "productionElasticsearch").build();
 
         InetAddress address = InetAddress.getByName("production.host");
 
         return TransportClient.builder()
-            .settings(settings)
-            .build()
-            .addTransportAddress(new InetSocketTransportAddress(address, 9300));
+                .settings(settings)
+                .build()
+                .addTransportAddress(new InetSocketTransportAddress(address, 9300));
     }
 
     @Bean

@@ -46,14 +46,14 @@ public class UpdateGreetingResource {
     }
 
     @RequestMapping(
-        path = "/greetings/{id}",
-        method = RequestMethod.PUT,
-        consumes = {
-            MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_FORM_URLENCODED_VALUE
-        })
+            path = "/greetings/{id}",
+            method = RequestMethod.PUT,
+            consumes = {
+                MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_FORM_URLENCODED_VALUE
+            })
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity updateGreeting(@NotNull @PathVariable("id") String id,
-        @Valid @RequestBody GreetingRequest request) {
+            @Valid @RequestBody GreetingRequest request) {
 
         greetingService.updateGreeting(id, request);
 

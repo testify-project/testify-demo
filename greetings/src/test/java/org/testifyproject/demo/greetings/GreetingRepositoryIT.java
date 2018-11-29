@@ -1,7 +1,6 @@
 package org.testifyproject.demo.greetings;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testifyproject.annotation.Module;
@@ -24,10 +23,10 @@ public class GreetingRepositoryIT {
     public void givenGreetingEntitySaveShouldSaveGreetingToTheDatabase() {
         //Arrange
         String phrase = "caio";
-        GreetingDocument entity = new GreetingDocument(phrase);
+        GreetingDocument document = GreetingDocument.builder().phrase(phrase).build();
 
         //Act
-        GreetingDocument result = sut.save(entity);
+        GreetingDocument result = sut.save(document);
 
         //Assert
         assertThat(result).isNotNull();

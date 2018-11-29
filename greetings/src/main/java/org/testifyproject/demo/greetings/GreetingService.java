@@ -55,8 +55,8 @@ public class GreetingService {
 
     public Iterable<GreetingResponse> listGreetings() {
         return StreamSupport.stream(greetingRepository.findAll().spliterator(), false)
-            .map(p -> modelMapper.map(p, GreetingResponse.class))
-            .collect(Collectors.toList());
+                .map(p -> modelMapper.map(p, GreetingResponse.class))
+                .collect(Collectors.toList());
     }
 
     public void deleteGreeting(String id) {

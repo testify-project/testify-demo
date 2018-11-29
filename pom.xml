@@ -14,7 +14,11 @@
     </modules>
 
     <properties>
+        <!-- Project Configuration -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- Maven Configuration -->
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
@@ -22,11 +26,20 @@
         <netbeans.hint.license>apache20</netbeans.hint.license>
         <netbeans.inceptionYear>2016</netbeans.inceptionYear>
 
-        <!-- Plugin Dependencies -->
-        <plugin.surefire>2.20.1</plugin.surefire>
-        <plugin.failsafe>2.20.1</plugin.failsafe>
-        <plugin.jacoco>0.7.9</plugin.jacoco>
+        <!--
+              WARNING: Version 2.18.1 of Failsafe and Surefire work but
+              versions above are know to have issues with SpringBoot.
+              See: https://github.com/spring-projects/spring-boot/issues/6254
+        -->
+        <plugin.surefire>2.18.1</plugin.surefire>
+        <plugin.failsafe>2.18.1</plugin.failsafe>
+        <!--
+              WARNING: Version 0.8.1 of JaCoCo works but version 0.8.2 does not.
+        -->
+        <plugin.jacoco>0.8.1</plugin.jacoco>
         <plugin.dependency>3.0.2</plugin.dependency>
+        <plugin.compiler>3.6.1</plugin.compiler>
+        <plugin.pit>1.4.3</plugin.pit>
 
         <!-- Test Dependencies -->
         <testify.version>1.0.2</testify.version>
@@ -41,21 +54,89 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
+                <artifactId>maven-surefire-plugin</artifactId>
             </plugin>
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
             </plugin>
             <plugin>
-                <artifactId>maven-failsafe-plugin</artifactId>
+                <groupId>org.pitest</groupId>
+                <artifactId>pitest-maven</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>pre-unit-test</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
+                            <propertyName>surefireArgLine</propertyName>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>post-unit-test</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
+                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>post-unit-test-for-ide</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
+                            <outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>merge-results</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>merge</goal>
+                        </goals>
+                        <configuration>
+                            <fileSets>
+                                <fileSet>
+                                    <directory>${project.build.directory}/coverage-reports</directory>
+                                    <includes>
+                                        <include>*.exec</include>
+                                    </includes>
+                                </fileSet>
+                            </fileSets>
+                            <destFile>${project.build.directory}/coverage-reports/jacoco.exec</destFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>post-merge-report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <dataFile>${project.build.directory}/coverage-reports/jacoco.exec</dataFile>
+                            <outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
         <pluginManagement>
             <plugins>
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>${plugin.compiler.version}</version>
+                    <version>${plugin.compiler}</version>
                     <configuration>
                         <compilerArguments>
                             <parameters />
@@ -75,10 +156,29 @@
                     </executions>
                 </plugin>
                 <plugin>
+                    <groupId>org.pitest</groupId>
+                    <artifactId>pitest-maven</artifactId>
+                    <version>${plugin.pit}</version>
+                    <configuration>
+                        <jvmArgs>
+                            <value>-javaagent:${org.testifyproject:core:jar}</value>
+                            <value>-client</value>
+                            <value>-Xms512m</value>
+                            <value>-Xmx2048m</value>
+                        </jvmArgs>
+                        <targetClasses>
+                            <param>org.testifyproject.demo.*</param>
+                        </targetClasses>
+                        <excludedTestClasses>
+                        </excludedTestClasses>
+                        <timeoutConstant>30000</timeoutConstant>
+                    </configuration>
+                </plugin>
+                <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${plugin.surefire}</version>
                     <configuration>
-                        <argLine>${argLine} -javaagent:${org.testifyproject:core:jar} -client -Xms512m -Xmx2048m</argLine>
+                        <argLine>${surefireArgLine} -javaagent:${org.testifyproject:core:jar} -client -Xms512m -Xmx2048m</argLine>
                         <failIfNoTests>false</failIfNoTests>
                         <forkCount>1</forkCount>
                         <reuseForks>true</reuseForks>
@@ -101,13 +201,12 @@
                         </execution>
                     </executions>
                     <configuration>
-                        <argLine>${argLine} -javaagent:${org.testifyproject:core:jar} -client -Xms512m -Xmx2048m</argLine>
+                        <argLine>${failsafeArgLine} -javaagent:${org.testifyproject:core:jar} -client -Xms512m -Xmx2048m</argLine>
                         <failIfNoTests>false</failIfNoTests>
                         <forkCount>1</forkCount>
                         <reuseForks>true</reuseForks>
                         <includes>
                             <include>**/*IT.java</include>
-                            <include>**/*ST.java</include>
                         </includes>
                     </configuration>
                 </plugin>
@@ -115,23 +214,6 @@
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>${plugin.jacoco}</version>
-                    <executions>
-                        <execution>
-                            <id>jacoco-prepare-agent</id>
-                            <goals>
-                                <goal>prepare-agent</goal>
-                            </goals>
-                            <configuration>
-                                <propertyName>argLine</propertyName>
-                            </configuration>
-                        </execution>
-                        <execution>
-                            <id>jacoco-report</id>
-                            <goals>
-                                <goal>report</goal>
-                            </goals>
-                        </execution>
-                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -217,4 +299,152 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+
+    <profiles>
+
+        <profile>
+            <!--
+              A profile that runs integration tests. Usage: mvn verify -Pinteg
+            -->
+            <id>integ</id>
+            <activation>
+                <property>
+                    <name>test</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>integration-test-prepare-agent</id>
+                                <goals>
+                                    <goal>prepare-agent-integration</goal>
+                                </goals>
+                                <configuration>
+                                    <destFile>${project.build.directory}/coverage-reports/jacoco-it.exec</destFile>
+                                    <propertyName>failsafeArgLine</propertyName>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>integration-test-report</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                                <configuration>
+                                    <dataFile>${project.build.directory}/coverage-reports/jacoco-it.exec</dataFile>
+                                    <outputDirectory>${project.reporting.outputDirectory}/jacoco-it</outputDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <!--
+              A profile that runs system tests. Usage: mvn verify -Psystem
+            -->
+            <id>system</id>
+            <activation>
+                <property>
+                    <name>test</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <includes>
+                                <include>**/*ST.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>system-test-prepare-agent</id>
+                                <goals>
+                                    <goal>prepare-agent-integration</goal>
+                                </goals>
+                                <configuration>
+                                    <destFile>${project.build.directory}/coverage-reports/jacoco-st.exec</destFile>
+                                    <propertyName>failsafeArgLine</propertyName>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>system-test-report</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                                <configuration>
+                                    <dataFile>${project.build.directory}/coverage-reports/jacoco-st.exec</dataFile>
+                                    <outputDirectory>${project.reporting.outputDirectory}/jacoco-st</outputDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <!--
+              A profile that runs unit, integration and system tests. Usage: mvn clean verify -Ptest
+            -->
+            <id>test</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <argLine>${failsafeArgLine} -javaagent:${org.testifyproject:core:jar} -client -Xms512m -Xmx2048m</argLine>
+                            <includes>
+                                <include>**/*IT.java</include>
+                                <include>**/*ST.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>test-prepare-agent</id>
+                                <goals>
+                                    <goal>prepare-agent-integration</goal>
+                                </goals>
+                                <configuration>
+                                    <destFile>${project.build.directory}/coverage-reports/jacoco-test.exec</destFile>
+                                    <propertyName>failsafeArgLine</propertyName>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>test-report</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                                <configuration>
+                                    <dataFile>${project.build.directory}/coverage-reports/jacoco-test.exec</dataFile>
+                                    <outputDirectory>${project.reporting.outputDirectory}/jacoco-test</outputDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

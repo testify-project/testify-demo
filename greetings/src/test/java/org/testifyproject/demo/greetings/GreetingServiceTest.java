@@ -1,12 +1,11 @@
 package org.testifyproject.demo.greetings;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.modelmapper.ModelMapper;
 import org.testifyproject.annotation.Fake;
 import org.testifyproject.annotation.Sut;
@@ -29,16 +28,16 @@ public class GreetingServiceTest {
         //Arrange
         GreetingRequest request = mock(GreetingRequest.class);
         Class<GreetingDocument> entityType = GreetingDocument.class;
-        GreetingDocument entity = mock(entityType);
-        String id = "0d216415-1b8e-4ab9-8531-fcbd25d5966f";
+        GreetingDocument document = mock(entityType);
+        String id = "1";
 
         given(modelMapper.map(request, entityType))
-            .willReturn(entity);
+                .willReturn(document);
 
-        given(greetingRepository.save(entity))
-            .willReturn(entity);
+        given(greetingRepository.save(document))
+                .willReturn(document);
 
-        given(entity.getId()).willReturn(id);
+        given(document.getId()).willReturn(id);
 
         //Act
         String result = sut.createGeeting(request);
@@ -46,7 +45,7 @@ public class GreetingServiceTest {
         //Assert
         assertThat(result).isEqualTo(id);
         verify(modelMapper).map(request, entityType);
-        verify(greetingRepository).save(entity);
+        verify(greetingRepository).save(document);
 
     }
 

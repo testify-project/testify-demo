@@ -23,4 +23,5 @@ server:
 
 logging:
     level:
-        org.springframework: WARN
+        root: ERROR
+        org.springframework: INFO

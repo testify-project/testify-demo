@@ -16,8 +16,11 @@
 package org.testifyproject.demo.greetings;
 
 import java.io.Serializable;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
@@ -26,36 +29,17 @@ import org.springframework.data.elasticsearch.annotations.Document;
  *
  * @author saden
  */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Document(indexName = "greeting", type = "greeting")
-@ToString
-@EqualsAndHashCode
 public class GreetingDocument implements Serializable {
 
-    private String id;
-    private String phrase;
-
-    public GreetingDocument() {
-    }
-
-    public GreetingDocument(String phrase) {
-        this.phrase = phrase;
-    }
-
     @Id
-    public String getId() {
-        return id;
-    }
+    private String id;
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getPhrase() {
-        return phrase;
-    }
-
-    public void setPhrase(String phrase) {
-        this.phrase = phrase;
-    }
+    @NonNull
+    private String phrase;
 
 }

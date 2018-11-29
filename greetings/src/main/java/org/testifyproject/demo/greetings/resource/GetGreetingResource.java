@@ -44,9 +44,9 @@ public class GetGreetingResource {
     }
 
     @RequestMapping(
-        path = "/greetings/{id}",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
+            path = "/greetings/{id}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity getGreeting(@NotNull @PathVariable("id") String id) {
         GreetingResponse result = greetingService.getGreeting(id);

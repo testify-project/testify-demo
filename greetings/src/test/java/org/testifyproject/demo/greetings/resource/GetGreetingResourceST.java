@@ -1,13 +1,10 @@
 package org.testifyproject.demo.greetings.resource;
 
-import static javax.ws.rs.core.Response.Status.OK;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
-
+import static javax.ws.rs.core.Response.Status.OK;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testifyproject.ClientInstance;
@@ -17,7 +14,7 @@ import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.demo.GreetingApplication;
-import org.testifyproject.demo.greetings.GreetingDocument;
+import org.testifyproject.demo.greetings.GreetingResponse;
 import org.testifyproject.fixture.TestConfigHandler;
 import org.testifyproject.fixture.TestModule;
 import org.testifyproject.junit4.SystemTest;
@@ -37,14 +34,14 @@ public class GetGreetingResourceST {
         //Act
         Response response = sut.getClient().getValue()
                 .path("greetings")
-                .path("0d216415-1b8e-4ab9-8531-fcbd25d5966f")
+                .path("1")
                 .request()
                 .get();
 
         //Assert
         assertThat(response.getStatus()).isEqualTo(OK.getStatusCode());
-        
-        GreetingDocument result = response.readEntity(GreetingDocument.class);
+
+        GreetingResponse result = response.readEntity(GreetingResponse.class);
         assertThat(result).isNotNull();
     }
 }

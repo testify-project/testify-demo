@@ -42,8 +42,8 @@ public class RemoveGreetingResource {
     }
 
     @RequestMapping(
-        path = "/greetings/{id}",
-        method = RequestMethod.DELETE)
+            path = "/greetings/{id}",
+            method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity removeGreeting(@NotNull @PathVariable("id") String id) {
         greetingService.deleteGreeting(id);
