@@ -18,7 +18,7 @@ import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.demo.GreetingApplication;
-import org.testifyproject.demo.greetings.GreetingEntity;
+import org.testifyproject.demo.greetings.GreetingRequest;
 import org.testifyproject.fixture.TestConfigHandler;
 import org.testifyproject.fixture.TestModule;
 import org.testifyproject.junit4.SystemTest;
@@ -43,11 +43,10 @@ public class ListGreetingsResourceST {
 
         //Assert
         assertThat(response.getStatus()).isEqualTo(OK.getStatusCode());
-        GenericType<List<GreetingEntity>> genericType =
-                new GenericType<List<GreetingEntity>>() {
+        GenericType<List<GreetingRequest>> genericType = new GenericType<List<GreetingRequest>>() {
         };
 
-        List<GreetingEntity> result = response.readEntity(genericType);
+        List<GreetingRequest> result = response.readEntity(genericType);
         assertThat(result).hasSize(1);
     }
 

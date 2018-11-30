@@ -17,7 +17,7 @@ import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.demo.GreetingApplication;
-import org.testifyproject.demo.greetings.GreetingEntity;
+import org.testifyproject.demo.greetings.GreetingRequest;
 import org.testifyproject.fixture.TestConfigHandler;
 import org.testifyproject.fixture.TestModule;
 import org.testifyproject.junit4.SystemTest;
@@ -44,7 +44,7 @@ public class GetGreetingResourceST {
         //Assert
         assertThat(response.getStatus()).isEqualTo(OK.getStatusCode());
         
-        GreetingEntity result = response.readEntity(GreetingEntity.class);
+        GreetingRequest result = response.readEntity(GreetingRequest.class);
         assertThat(result).isNotNull();
     }
 }

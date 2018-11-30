@@ -18,7 +18,7 @@ import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.demo.GreetingApplication;
-import org.testifyproject.demo.greetings.GreetingEntity;
+import org.testifyproject.demo.greetings.GreetingRequest;
 import org.testifyproject.fixture.TestModule;
 import org.testifyproject.junit4.SystemTest;
 
@@ -39,13 +39,13 @@ public class CreateGreetingResourceST {
     @Test
     public void givenGreetingRequestPostGreetingShouldCreateGreeting() {
         //Arrange
-        GreetingEntity entity = new GreetingEntity("caio");
+        GreetingRequest request = new GreetingRequest("caio");
 
         //Act
         Response response = sut.getClient().getValue()
             .path("greetings")
             .request()
-            .post(Entity.json(entity));
+                .post(Entity.json(request));
 
         //Assert
         assertThat(response.getStatus()).isEqualTo(CREATED.getStatusCode());
