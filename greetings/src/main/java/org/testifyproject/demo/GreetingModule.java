@@ -20,31 +20,40 @@ import static org.modelmapper.config.Configuration.AccessLevel.PUBLIC;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.modelmapper.convention.NamingConventions;
 import org.postgresql.ds.PGSimpleDataSource;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.PlatformTransactionManager;
 
 /**
  * Greeting Spring Java Config class..
  *
  * @author saden
  */
-@ComponentScan
+@EnableAutoConfiguration(exclude = {
+    DataSourceAutoConfiguration.class,
+    HibernateJpaAutoConfiguration.class,
+    DataSourceTransactionManagerAutoConfiguration.class})
 @Configuration
-@EnableJpaRepositories
-@EnableTransactionManagement
+@ComponentScan("org.testifyproject.demo")
 public class GreetingModule {
 
     @Bean
-    DataSource productionDataSource() {
+    DataSource dataSource() {
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
         dataSource.setServerName("production.acme.com");
         dataSource.setPortNumber(5432);
@@ -60,12 +69,21 @@ public class GreetingModule {
         Map<String, Object> properties = new HashMap<>();
         properties.put(DATASOURCE, dataSource);
 
-        LocalContainerEntityManagerFactoryBean bean = new LocalContainerEntityManagerFactoryBean();
+        LocalContainerEntityManagerFactoryBean bean =
+                new LocalContainerEntityManagerFactoryBean();
         bean.setDataSource(dataSource);
         bean.setPersistenceUnitName("example.greetings");
         bean.setJpaPropertyMap(properties);
 
         return bean;
+    }
+
+    @Bean
+    PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+        JpaTransactionManager transactionManager =
+                new JpaTransactionManager(entityManagerFactory);
+
+        return transactionManager;
     }
 
     @Bean

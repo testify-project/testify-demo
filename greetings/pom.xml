@@ -40,6 +40,8 @@
         <javax.transaction.version>1.2</javax.transaction.version>
         <javax.interceptor.version>1.2</javax.interceptor.version>
         <postgressql.version>9.4.1207</postgressql.version>
+        <spring.version>4.3.11.RELEASE</spring.version>
+        <spring.data.version>Kay-SR9</spring.data.version>
     </properties>
 
     <build>
@@ -62,6 +64,13 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-releasetrain</artifactId>
+                <version>${spring.data.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
                 <groupId>com.fasterxml.jackson</groupId>
                 <artifactId>jackson-bom</artifactId>
                 <version>${jackson.version}</version>
@@ -80,10 +89,6 @@
         <dependency>
             <groupId>org.testifyproject.client</groupId>
             <artifactId>jersey-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.testifyproject.local-resources</groupId>
-            <artifactId>hsql</artifactId>
         </dependency>
         <dependency>
             <groupId>org.testifyproject.virtual-resources</groupId>
@@ -140,6 +145,14 @@
         </dependency>
 
         <!-- Database Deps -->
+<!--        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-jpa</artifactId>
+        </dependency>-->
         <dependency>
             <groupId>javax.transaction</groupId>
             <artifactId>javax.transaction-api</artifactId>

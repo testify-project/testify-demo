@@ -16,7 +16,7 @@
 package org.testifyproject.demo;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 /**
@@ -24,8 +24,8 @@ import org.springframework.context.annotation.Import;
  *
  * @author saden
  */
-@Import(GreetingModule.class)
-@SpringBootApplication
+@Configuration
+@Import({GreetingModule.class})
 public class GreetingApplication {
 
     public static void main(String[] args) throws Exception {
